@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String     @id @default(cuid())
+  nick     String     @unique @default(uuid())
+  role     RoleEnum   @default(USER)
+  email    String     @unique
+  password String
+  Settings Settings[]
+  sessions Session[]
+
+  @@map("users")
+}
+
+model Settings {
+  id           String  @id @default(cuid())
+  user         User    @relation(fields: [userId], references: [id])
+  userId       String
+  isTimeShowed Boolean @default(true)
+
+  @@map("settings")
+}
+
+model Session {
+  id           String  @id @default(cuid())
+  user         User    @relation(fields: [userId], references: [id])
+  userId       String
+  name         String
+  scrambleType String
+  Solve        Solve[]
+
+  @@map("session")
+}
+
+model Solve {
+  id        String       @id @default(cuid())
+  session   Session      @relation(fields: [sessionId], references: [id])
+  sessionId String
+  time      DateTime
+  penalty   PenaltyEnum?
+  scramble  String
+  createdAt DateTime     @default(now())
+
+  @@map("solves")
+}
+
+enum PenaltyEnum {
+  plus2
+  dnf
+}
+
+enum RoleEnum {
+  USER
+  ADMIN
+}

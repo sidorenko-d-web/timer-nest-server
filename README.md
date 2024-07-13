@@ -1,0 +1,1 @@
+Hello, I'm here to introduce you my version of timer for Rubiks cube and other puzzles. <br> This is repository for backend. The link to frontend wil be added later <br> <a href='https://t.me/dm1trysidorenko'>t.me/dm1trysidorenko</a>
