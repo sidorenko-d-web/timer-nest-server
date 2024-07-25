@@ -19,7 +19,7 @@ model User {
   role     RoleEnum   @default(USER)
   email    String     @unique
   password String
-  Settings Settings[]
+  settings Settings[]
   sessions Session[]
 
   @@map("users")
@@ -27,7 +27,7 @@ model User {
 
 model Settings {
   id           String  @id @default(cuid())
-  user         User    @relation(fields: [userId], references: [id])
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
   isTimeShowed Boolean @default(true)
 
@@ -36,18 +36,18 @@ model Settings {
 
 model Session {
   id           String  @id @default(cuid())
-  user         User    @relation(fields: [userId], references: [id])
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
   name         String
   scrambleType String
-  Solve        Solve[]
+  solves       Solve[]
 
   @@map("session")
 }
 
 model Solve {
   id        String       @id @default(cuid())
-  session   Session      @relation(fields: [sessionId], references: [id])
+  session   Session      @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   sessionId String
   time      DateTime
   penalty   PenaltyEnum?

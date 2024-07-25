@@ -1,31 +1,43 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import {
+	Controller,
+	Get,
+	Body,
+	Delete,
+	UsePipes,
+	ValidationPipe,
+  HttpCode,
+  Put,
+	UnauthorizedException
+} from '@nestjs/common'
+import { UserService } from './user.service'
+import { Auth } from 'src/auth/decoradors/auth.decorator'
+import { GetUser } from 'src/auth/decoradors/GetUser.decorator'
+import { UpdateUserNickDto } from './dto/update-nick.dto'
+import { ConfigService } from '@nestjs/config'
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+	constructor(private readonly userService: UserService, private configService: ConfigService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
+	@Auth()
+	@Get()
+	getUser(@GetUser('id') userId: string) {
+		this.userService.getById(userId)
+	}
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
-  }
+	@UsePipes(new ValidationPipe())
+  @HttpCode(201)
+	@Put('update-nick')
+  @Auth()
+	update(@GetUser('id') userId: string, @Body() dto: UpdateUserNickDto) {
+		this.userService.updateNickname(userId, dto.newNick)
+	}
 
-
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+	@Delete()
+  @Auth()
+	remove(@GetUser('id') userId: string, @Body() body: {pass: string}) {
+		if(body.pass !== this.configService.get('PASS_TO_DEL')) throw new UnauthorizedException('ur not permit to do this')
+    this.userService.deleteUser(userId)
   }
 }
+ 

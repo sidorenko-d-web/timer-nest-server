@@ -1,30 +1,74 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import {
+	Controller,
+	Post,
+	Body,
+	UsePipes,
+	ValidationPipe,
+	HttpCode,
+	Res,
+	Req,
+	UnauthorizedException
+} from '@nestjs/common'
+import { AuthService } from './auth.service'
+import type { AuthDto } from './dto/auth.dto'
+import { Request, Response } from 'express'
+import { ConfigService } from '@nestjs/config'
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+	constructor(
+		private readonly authService: AuthService,
+		private configService: ConfigService
+	) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
-  }
+	@UsePipes(new ValidationPipe())
+	@HttpCode(201)
+	@Post('login')
+	async login(@Body() dto: AuthDto, @Res({ passthrough: true }) res: Response) {
+		const { refreshToken, ...response } = await this.authService.login(dto)
+		this.authService.addRefreshTokenToResponse(res, refreshToken)
+		return response
+	}
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
-  }
+	@UsePipes(new ValidationPipe())
+	@HttpCode(201)
+	@Post('register')
+	async register(
+		@Body() dto: AuthDto,
+		@Res({ passthrough: true }) res: Response
+	) {
+		const { refreshToken, ...response } = await this.authService.register(dto)
+		this.authService.addRefreshTokenToResponse(res, refreshToken)
+		return response
+	}
 
-  
+	@HttpCode(201)
+	@Post('login/access-token')
+	async getNewTokens(
+		@Req() req: Request,
+		@Res({ passthrough: true }) res: Response
+	) {
+		const refreshTokenFromCookies: string =
+			req.cookies[this.configService.get('REFRESH_TOKEN_NAME')]
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
+		if (!refreshTokenFromCookies) {
+			this.authService.removeRefreshTokenToResponse(res)
+			throw new UnauthorizedException('Refresh token not passed')
+		}
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+		const { refreshToken, ...response } = await this.authService.getNewTokens(
+			refreshTokenFromCookies
+		)
+
+    this.authService.addRefreshTokenToResponse(res, refreshToken)
+
+    return response
+	}
+
+	@HttpCode(201)
+  @Post('logout')
+  async logout(@Res({passthrough: true}) res: Response){
+    this.authService.removeRefreshTokenToResponse(res)
+    return true
   }
 }

@@ -1,0 +1,16 @@
+const sessionData = new Map<string, string>()
+sessionData.set('2x2', '2x2')
+sessionData.set('3x3', '3x3')
+sessionData.set('3x3 BLD', '3x3')
+sessionData.set('3x3 OH', '3x3')
+sessionData.set('4x4', '4x4')
+sessionData.set('5x5', '5x5')
+sessionData.set('6x6', '6x6')
+sessionData.set('7x7', '7x7')
+sessionData.set('Square-1', 'sq1')
+sessionData.set('Pyraminx', 'pyra')
+sessionData.set('Megaminx', 'minx')
+sessionData.set('Clock', 'clock')
+sessionData.set('Skewb', 'skewb')
+
+export default sessionData
