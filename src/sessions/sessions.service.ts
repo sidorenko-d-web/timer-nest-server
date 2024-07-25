@@ -13,17 +13,16 @@ export class SessionsService {
 		const session = { userId, ...createSessionDto }
 		return this.prisma.session.create({ data: session })
 	}
-	createDefaultSessions(userId: string) {
+
+	generateDefaultSessions() { //uses like generator of an array of def sessions
 		const defSessionNames = [...sessionData.keys()]
 		const defSessionsTypes = [...sessionData.values()]
 		const sessions = defSessionNames.map((elem, index) => ({
-			userId,
 			name: String(elem),
 			scrambleType: String(defSessionsTypes[index])
 		}))
-		return this.prisma.session.createMany({
-			data: sessions
-		})
+
+		return sessions
 	}
 
 	getAllSessionsOfUser(userId: string) {

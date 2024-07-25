@@ -2,14 +2,12 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/prisma.service'
 import { AuthDto } from 'src/auth/dto/auth.dto'
 import { hash } from 'argon2'
-import { SettingsService } from 'src/settings/settings.service'
 import { SessionsService } from 'src/sessions/sessions.service'
 
 @Injectable()
 export class UserService {
 	constructor(
 		private prisma: PrismaService,
-		private settingsService: SettingsService,
 		private sessionsService: SessionsService
 	) {}
 
@@ -21,11 +19,18 @@ export class UserService {
 		}
 
 		const userCreated = await this.prisma.user.create({
-			data: user
+			data: {
+				...user,
+				sessions: {
+					createMany: {
+						data: this.sessionsService.generateDefaultSessions()
+					}
+				},
+				settings: {
+					create: {}
+				}
+			}
 		})
-
-		await this.settingsService.create({ userId: userCreated.id })
-		await this.sessionsService.createDefaultSessions(userCreated.id)
 
 		return userCreated
 	}
