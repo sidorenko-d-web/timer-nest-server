@@ -1,16 +1,20 @@
-import { PenaltyEnum } from "@prisma/client"
-import { IsDate, IsEnum, IsString } from "class-validator"
+import { PenaltyEnum } from '@prisma/client'
+import { IsDate, IsDateString, IsEnum, IsOptional, IsString } from 'class-validator'
 
 export class CreateSolveDto {
-  @IsString()
-  scramble: string
+	@IsString()
+	sessionId: string
 
-  @IsDate()
-  time: Date
+	@IsString()
+	scramble: string
 
-  @IsEnum(PenaltyEnum)
-  penalty: PenaltyEnum
+	@IsDateString()
+	time: Date
 
-  @IsDate()
-  createdAt: Date
+  @IsOptional()
+	@IsEnum(PenaltyEnum)
+	penalty?: PenaltyEnum
+
+	@IsDateString()
+	createdAt: Date
 }

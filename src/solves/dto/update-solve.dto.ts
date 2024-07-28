@@ -1,4 +1,8 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateSolveDto } from './create-solve.dto';
+import { PenaltyEnum } from "@prisma/client";
+import { IsEnum, IsOptional } from "class-validator";
 
-export class UpdateSolveDto extends PartialType(CreateSolveDto) {}
+export class UpdateSolveDto{
+  @IsOptional()
+  @IsEnum(PenaltyEnum)
+  penalty: PenaltyEnum 
+}

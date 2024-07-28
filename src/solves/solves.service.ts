@@ -1,23 +1,24 @@
-import { Injectable } from '@nestjs/common';
-import { CreateSolveDto } from './dto/create-solve.dto';
-import { UpdateSolveDto } from './dto/update-solve.dto';
+import { Injectable } from '@nestjs/common'
+import { CreateSolveDto } from './dto/create-solve.dto'
+import { UpdateSolveDto } from './dto/update-solve.dto'
+import { PrismaService } from 'src/prisma.service'
 
 @Injectable()
 export class SolvesService {
-  create(createSolveDto: CreateSolveDto) {
-    return 'This action adds a new solve';
-  }
+	constructor(private prisma: PrismaService) {}
+	create(createSolveDto: CreateSolveDto) {
+		return this.prisma.solve.create({ data: createSolveDto })
+	}
 
+	findOne(solveId: string) {
+		return this.prisma.solve.findFirst({ where: { id: solveId } })
+	}
 
-  findOne(id: number) {
-    return `This action returns a #${id} solve`;
-  }
+	update(solveId: string, updateSolveDto: UpdateSolveDto) {
+		return this.prisma.solve.update({where: {id: solveId}, data: updateSolveDto})
+	}
 
-  update(id: number, updateSolveDto: UpdateSolveDto) {
-    return `This action updates a #${id} solve`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} solve`;
-  }
+	remove(solveId: string) {
+		return this.prisma.solve.delete({where: {id: solveId}})
+	}
 }

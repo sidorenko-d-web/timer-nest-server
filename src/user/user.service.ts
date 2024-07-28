@@ -36,7 +36,12 @@ export class UserService {
 	}
 
 	getByEmail(email: string) {
-		return this.prisma.user.findUnique({ where: { email } })
+		return this.prisma.user.findUnique({
+			where: { email },
+			include: {
+				settings: true
+			}
+		})
 	}
 
 	getById(id: string) {
