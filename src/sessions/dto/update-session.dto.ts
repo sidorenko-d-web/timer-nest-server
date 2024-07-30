@@ -4,7 +4,7 @@ import scrambleTypes  from './sessionData'
 
 export class UpdateSessionDto{
   @IsOptional()
-  @MaxLength(15, {message: 'name of session should be less than 15 characters'})
+  @MaxLength(12, {message: 'name of session should be less than 12 characters'})
 	@IsString()
 	name: string
 }

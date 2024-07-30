@@ -33,7 +33,10 @@ export class SessionsService {
 
 	getAllSessionsOfUser(userId: string) {
 		return this.prisma.session.findMany({
-			where: { userId }
+			orderBy: {
+				name: 'asc'
+			},
+			where: { userId },
 		})
 	}
 
@@ -49,6 +52,8 @@ export class SessionsService {
 		sessionName: string,
 		updateSessionDto: UpdateSessionDto
 	) {
+		if (sessionName === updateSessionDto.name)
+			throw new BadRequestException('It must be another name')
 		if (sessionName === '3x3')
 			throw new BadRequestException('You must not rename default 3x3 session')
 		const session = await this.prisma.session.findFirst({
