@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import type { CreateSessionDto } from './dto/create-session.dto'
 import type { UpdateSessionDto } from './dto/update-session.dto'
 import { PrismaService } from 'src/prisma.service'
@@ -9,12 +9,18 @@ import sessionData from './dto/sessionData'
 export class SessionsService {
 	constructor(private prisma: PrismaService) {}
 
-	createNewSession(createSessionDto: CreateSessionDto, userId: string) {
-		const session = { userId, ...createSessionDto }
-		return this.prisma.session.create({ data: session })
+	async createNewSession(createSessionDto: CreateSessionDto, userId: string) {
+		const session = await this.prisma.session.findFirst({
+			where: { userId, name: createSessionDto.name }
+		})
+		if (session) throw new BadRequestException('Name should be unique')
+
+		const newSession = { userId, ...createSessionDto }
+		return await this.prisma.session.create({ data: newSession })
 	}
 
-	generateDefaultSessions() { //uses like generator of an array of def sessions
+	generateDefaultSessions() {
+		//uses like generator of an array of def sessions
 		const defSessionNames = [...sessionData.keys()]
 		const defSessionsTypes = [...sessionData.values()]
 		const sessions = defSessionNames.map((elem, index) => ({
@@ -31,23 +37,48 @@ export class SessionsService {
 		})
 	}
 
-	getSessionOfUser(sessionId: string) {
-		return this.prisma.session.findUnique({
-			where: { id: sessionId },
+	getSessionOfUser(userId: string, sessionName: string) {
+		return this.prisma.session.findFirst({
+			where: { userId, name: sessionName },
 			include: { solves: true }
 		})
 	}
 
-	update(sessionId: string, updateSessionDto: UpdateSessionDto) {
-		return this.prisma.session.update({
-			where: { id: sessionId },
+	async update(
+		userId: string,
+		sessionName: string,
+		updateSessionDto: UpdateSessionDto
+	) {
+		if (sessionName === '3x3')
+			throw new BadRequestException('You must not rename default 3x3 session')
+		const session = await this.prisma.session.findFirst({
+			where: { userId, name: updateSessionDto.name }
+		})
+
+		if (session) throw new BadRequestException('Name should be unique')
+
+		await this.prisma.session.updateMany({
+			where: { userId, name: sessionName },
 			data: updateSessionDto
 		})
+
+		return {
+			name: updateSessionDto.name
+		}
 	}
 
-	remove(id: string) {
-		return this.prisma.session.delete({
-			where: { id }
+	async remove(userId: string, sessionName: string) {
+		if (sessionName === '3x3')
+			throw new BadRequestException('You must not delete default 3x3 session')
+		const anotherSession = await this.prisma.session.findFirst({
+			where: { userId, name: { not: sessionName } }
 		})
+		if (!anotherSession)
+			throw new BadRequestException('You cannot delete all sessions')
+
+		await this.prisma.session.deleteMany({
+			where: { userId, name: sessionName }
+		})
+		return anotherSession
 	}
 }

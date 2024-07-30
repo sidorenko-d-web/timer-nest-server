@@ -38,22 +38,22 @@ export class SessionsController {
 		return this.sessionsService.getAllSessionsOfUser(userId)
 	}
 
-	@Get(':id')
+	@Get(':sessionName')
   @Auth()
-	getSessionOfUser(@Param('id') sessionId: string) {
-		return this.sessionsService.getSessionOfUser(sessionId)
+	getSessionOfUser(@GetUser('id') userId: string, @Param('sessionName') sessionName: string) {
+		return this.sessionsService.getSessionOfUser(userId, sessionName)
 	}
 
   @UsePipes(new ValidationPipe())
-	@Put(':id')
+	@Put(':name')
   @Auth()
-	update(@Param('id') sessionId: string, @Body() updateSessionDto: UpdateSessionDto) {
-		return this.sessionsService.update(sessionId, updateSessionDto)
+	async update(@GetUser('id') userId: string, @Param('name') sessionName: string, @Body() updateSessionDto: UpdateSessionDto) {
+		return await this.sessionsService.update(userId, sessionName, updateSessionDto) 
 	}
 
-	@Delete(':id')
+	@Delete(':name')
   @Auth()
-	remove(@Param('id') id: string) {
-		return this.sessionsService.remove(id)
+	remove(@GetUser('id') userId: string, @Param('name') sessionName: string) {
+		return this.sessionsService.remove(userId, sessionName)
 	}
 }
