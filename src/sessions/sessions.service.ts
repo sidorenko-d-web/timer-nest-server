@@ -20,7 +20,7 @@ export class SessionsService {
 	}
 
 	generateDefaultSessions() {
-		//uses like generator of an array of def sessions
+		//uses like generator of an array with def sessions
 		const defSessionNames = [...sessionData.keys()]
 		const defSessionsTypes = [...sessionData.values()]
 		const sessions = defSessionNames.map((elem, index) => ({
@@ -43,7 +43,11 @@ export class SessionsService {
 	getSessionOfUser(userId: string, sessionName: string) {
 		return this.prisma.session.findFirst({
 			where: { userId, name: sessionName },
-			include: { solves: true }
+			include: { solves: {
+				orderBy: {
+					createdAt: 'desc'
+				}
+			} }
 		})
 	}
 
