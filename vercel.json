@@ -12,7 +12,7 @@
 			"src": "/(.*)",
 			"headers": {
 				"Access-Control-Allow-Credentials": "true",
-				"Access-Control-Allow-Origin": "https://bb-timer.vercel.app/*",
+				"Access-Control-Allow-Origin": "https://bb-timer.vercel.app/",
 
 				"Access-Control-Allow-Methods": "GET,OPTIONS,PATCH,DELETE,POST,PUT",
 
