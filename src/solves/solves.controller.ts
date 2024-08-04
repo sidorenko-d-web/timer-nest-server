@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, HttpStatus, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UsePipes, ValidationPipe, HttpStatus, HttpCode, Put } from '@nestjs/common';
 import { SolvesService } from './solves.service';
 import { CreateSolveDto } from './dto/create-solve.dto';
 import { UpdateSolveDto } from './dto/update-solve.dto';
@@ -24,7 +24,7 @@ export class SolvesController {
 
   @UsePipes(new ValidationPipe())
   @HttpCode(201)
-  @Patch(':id')
+  @Put(':id')
   @Auth()
   update(@Param('id') id: string, @Body() updateSolveDto: UpdateSolveDto) {
     return this.solvesService.update(id, updateSolveDto);
