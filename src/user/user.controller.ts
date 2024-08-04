@@ -10,8 +10,8 @@ import {
 	UnauthorizedException
 } from '@nestjs/common'
 import { UserService } from './user.service'
-import { Auth } from 'src/auth/decoradors/auth.decorator'
-import { GetUser } from 'src/auth/decoradors/GetUser.decorator'
+import { Auth } from '../auth/decoradors/auth.decorator'
+import { GetUser } from '../auth/decoradors/GetUser.decorator'
 import { UpdateUserNickDto } from './dto/update-nick.dto'
 import { ConfigService } from '@nestjs/config'
 

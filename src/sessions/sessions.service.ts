@@ -1,8 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import type { CreateSessionDto } from './dto/create-session.dto'
 import type { UpdateSessionDto } from './dto/update-session.dto'
-import { PrismaService } from 'src/prisma.service'
-import { Session } from '@prisma/client'
+import { PrismaService } from '../prisma.service'
 import sessionData from './dto/sessionData'
 
 @Injectable()

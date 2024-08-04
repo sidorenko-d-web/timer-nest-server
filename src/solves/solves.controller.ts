@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, Delete, UsePipes, ValidationPipe, H
 import { SolvesService } from './solves.service';
 import { CreateSolveDto } from './dto/create-solve.dto';
 import { UpdateSolveDto } from './dto/update-solve.dto';
-import { Auth } from 'src/auth/decoradors/auth.decorator';
+import { Auth } from '../auth/decoradors/auth.decorator';
 
 @Controller('solves')
 export class SolvesController {

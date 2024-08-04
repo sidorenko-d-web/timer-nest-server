@@ -13,8 +13,8 @@ import {
 import { SessionsService } from './sessions.service'
 import { CreateSessionDto } from './dto/create-session.dto'
 import { UpdateSessionDto } from './dto/update-session.dto'
-import { GetUser } from 'src/auth/decoradors/GetUser.decorator'
-import { Auth } from 'src/auth/decoradors/auth.decorator'
+import { GetUser } from '../auth/decoradors/GetUser.decorator'
+import { Auth } from '../auth/decoradors/auth.decorator'
 
 @Controller('sessions')
 export class SessionsController {
