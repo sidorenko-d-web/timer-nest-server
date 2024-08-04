@@ -29,6 +29,9 @@ export class UserService {
 				settings: {
 					create: {}
 				}
+			},
+			include: {
+				settings: true
 			}
 		})
 
@@ -38,19 +41,17 @@ export class UserService {
 	getByEmail(email: string) {
 		return this.prisma.user.findUnique({
 			where: { email },
-			include: {
-				settings: true
-			}
 		})
 	}
 
-	getById(id: string) {
-		return this.prisma.user.findUnique({
+	async getById(id: string) {
+		const res = await this.prisma.user.findUnique({
 			where: { id },
 			include: {
 				settings: true
 			}
 		})
+		return res
 	}
 
 	updateNickname(id: string, newNick: string) {

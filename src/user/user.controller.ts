@@ -22,7 +22,7 @@ export class UserController {
 	@Auth()
 	@Get()
 	getUser(@GetUser('id') userId: string) {
-		this.userService.getById(userId)
+		return this.userService.getById(userId)
 	}
 
 	@UsePipes(new ValidationPipe())

@@ -7,12 +7,14 @@ export class SettingsService {
 	constructor(private prisma: PrismaService) {}
 
 
-	update(id: string, updateSettingDto: UpdateSettingsDto) {
-		return this.prisma.settings.update({
+	async update(id: string, updateSettingDto: UpdateSettingsDto) {
+		const res = await this.prisma.settings.update({
 			where: {
 				id
 			},
 			data: updateSettingDto
 		})
+		console.log(res)
+		return res
 	}
 }

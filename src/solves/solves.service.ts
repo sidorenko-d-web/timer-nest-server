@@ -14,11 +14,8 @@ export class SolvesService {
 		return this.prisma.solve.findFirst({ where: { id: solveId } })
 	}
 
-	async update(solveId: string, updateSolveDto: UpdateSolveDto) {
-		console.log(updateSolveDto)
-		const res =  await this.prisma.solve.update({where: {id: solveId}, data: updateSolveDto})
-		console.log(await this.prisma.solve.findUnique({where: {id: solveId}}))
-		return res
+	 update(solveId: string, updateSolveDto: UpdateSolveDto) {
+		return this.prisma.solve.update({where: {id: solveId}, data: updateSolveDto})
 	}
 
 	remove(solveId: string) {
