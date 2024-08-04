@@ -88,7 +88,7 @@ export class AuthService {
 			domain: this.configService.get('COOKIE_DOMAIN'),
 			expires: expiresIn,
 			secure: true,
-			sameSite: 'lax'
+			sameSite: 'none'
 		})
 	}
 
@@ -98,7 +98,7 @@ export class AuthService {
 			domain: this.configService.get('COOKIE_DOMAIN'),
 			expires: new Date(0),
 			secure: true,
-			sameSite: 'lax'
+			sameSite: 'none'
 		})
 	}
 }
