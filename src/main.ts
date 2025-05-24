@@ -12,7 +12,8 @@ async function bootstrap() {
 			'http://localhost:3000/',
 			'http://localhost:3000',
 			'http://192.168.31.223:3000/',
-			'http://192.168.31.223:3000'
+			'http://192.168.31.223:3000',
+			'https://bb-timer.vercel.app/'
 		],
 		methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
 		credentials: true
